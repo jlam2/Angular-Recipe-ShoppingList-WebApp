@@ -22,20 +22,17 @@ export class DataStorageService {
     }
 
     fetchRecipes(){
-        return this.authService.user.pipe(
-            take(1), 
-            exhaustMap(user => {
-                return this.http.get<Recipe[]>(
-                    'https://angular-recipe-book-f05f7-default-rtdb.firebaseio.com/.json',
-                    {params: new HttpParams().set('auth', user.token)}
-                );
-            }),
+        return this.http.get<Recipe[]>(
+            'https://angular-recipe-book-f05f7-default-rtdb.firebaseio.com/.json'
+        ).pipe(
             map(recipes => {
                 return recipes.map(recipe => {
                     return {...recipe, ingredients: recipe.ingredients ? recipe.ingredients:[]};
                 })
             }),
             tap(recipes => {this.recipesService.setRecipes(recipes);})
-        );
+        )
     }
+
+    
 }
